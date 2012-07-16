@@ -46,16 +46,21 @@ cmd = args.shift.to_s
 "You must provide a command".die if cmd.empty?
 address = [127, Process.uid, 1].pack("CnC").unpack("C4").join(".")
 
+("Will bind on %s, command = '%s', args = '%s'" \
+  % ["#{address}:#{OPTIONS[:port]}", cmd, args.join(' ')]).verbose(OPTIONS[:verbose])
+
+# Taken from example in the source code documetation
+# Link: http://ruby-doc.org/stdlib-1.8.7/
+#         libdoc/socket/rdoc/Socket.html#method-i-bind
 begin
-  socket = Socket.new(:INET, :STREAM, 0)
-  socket.bind(Addrinfo.tcp(address, OPTIONS[:port]))
+  require 'socket'
+  include Socket::Constants
+  socket = Socket.new(AF_INET, SOCK_STREAM, 0)
+  socket.bind( Socket.pack_sockaddr_in( OPTIONS[:port], address ) )
 rescue Errno::EADDRINUSE
   "Address is in use. Is your application running?".die(1, STDOUT)
 rescue => e
   e.to_s.die(1)
 end
 
-("Binded on %s, command = '%s', args = '%s'" \
-  % ["#{address}:#{OPTIONS[:port]}", cmd, args.join(' ')]).verbose(OPTIONS[:verbose])
-
-exec cmd, args.join(" ")
+args.empty? ? exec(cmd) : exec(cmd, args.join(" "))
