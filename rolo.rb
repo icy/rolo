@@ -44,10 +44,11 @@ end
 
 cmd = args.shift.to_s
 "You must provide a command".die if cmd.empty?
-address = [127, Process.uid, 1].pack("CnC").unpack("C4").join(".")
+cmd = "#{cmd} #{args.join(' ')}" unless args.empty?
 
-("Will bind on %s:%d, command = '%s', args = '%s'" \
-  % [address, OPTIONS[:port], cmd, args.join(' ')]).verbose(OPTIONS[:verbose])
+address = [127, Process.uid, 1].pack("CnC").unpack("C4").join(".")
+("Will bind on %s:%d, command = '%s'" \
+  % [address, OPTIONS[:port], cmd]).verbose(OPTIONS[:verbose])
 
 # Taken from example in the source code documetation
 # Link: http://ruby-doc.org/stdlib-1.8.7/
@@ -62,4 +63,4 @@ rescue => e
   e.to_s.die(1)
 end
 
-args.empty? ? exec(cmd) : exec(cmd, args.join(" "))
+exec cmd
