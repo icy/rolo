@@ -4,6 +4,7 @@
 # Author : Anh K. Huynh
 # License: GPL2
 # Date   : 2012 July 16th
+# Source : http://github.com/icy/rolo
 # Link   : [1] Tim's solo: http://github.com/timkay/solo/
 #          [2] Fork-exec : http://en.wikipedia.org/wiki/Fork-exec
 #          [3] Unix fork : http://www-h.eng.cam.ac.uk/help/tpl/unix/fork.html
