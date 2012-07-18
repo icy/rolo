@@ -63,7 +63,7 @@ rolo.rb -p 4567 ssh -fN remote -L localhost:1234:localhost:10000
   will check if your ssh command is still running. If 'yes', it will
   simply exit; if 'no', `rolo.rb` will start the ssh command.
 
-  However, if you use *OpenSSH 5.9p1* (or later), `ssh` will close all file
+  However, if you use *OpenSSH 5.6p1* (or later), `ssh` will close all file
   descriptors from the parent (except for `STDIN`, `STDOUT` and `STDERR`).
   As the socket opened by `rolo.rb` is closed, `rolo.rb` will always
   start new instance of the `ssh` tunnel. Fortunately, `ssh` has option
