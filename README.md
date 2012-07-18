@@ -23,7 +23,7 @@
 
 In `<command>` and `<arguments>`, you can use `%address`, `%port` which
 are replaced by the socket address and port that the problem uses to
-check for status of the program. This is very useful if your program
+check for status of your command. This is very useful if your command
 closes all file descriptors at the time it runs, but it has some ways
 to listen on `%address:%port`. See EXAMPLE for details.
 
@@ -33,7 +33,7 @@ to listen on `%address:%port`. See EXAMPLE for details.
   socket on a local address `127.x.y.1:<port>` (`x.y` is translated
   from process's user id hence that allows two different users on the
   system use the same `<port>`.)  This socket will immediately closed
-  after your program exit. And as long as your program is running, we
+  after your program exit. And as long as your command is running, we
   have a chance to check its status by simply checking the status of
   this socket. If it is still open when `rolo.rb` is invoked, `rolo.rb`
   will exit without invoking a new instance of your program.
