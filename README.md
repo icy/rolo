@@ -32,7 +32,7 @@ to listen on `%address:%port`. See EXAMPLE for details.
   Before starting your `<command>` (using `exec`), `rolo.rb` will open a
   socket on a local address `127.x.y.1:<port>` (`x.y` is translated
   from process's user id hence that allows two different users on the
-  system use the same `<port>`.)  This socket will immediately closed
+  system to use the same `<port>`.)  This socket will immediately closed
   after your program exit. And as long as your command is running, we
   have a chance to check its status by simply checking the status of
   this socket. If it is still open when `rolo.rb` is invoked, `rolo.rb`
