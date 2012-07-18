@@ -95,7 +95,7 @@ while true
   elsif %w{-a --address}.include?(f)
     ARGV.shift
     OPTIONS[:address] = ARGV.shift.to_s.strip
-    "Invalid address '#{OPTIONS[:address]}' was provided. Should in in format 'x.y.z.t'".die \
+    "Invalid address '#{OPTIONS[:address]}' was provided. Should be in format 'x.y.z.t'".die \
       unless OPTIONS[:address].match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/)
   elsif %w{-t --test}.include?(f)
     OPTIONS[:test] = true
