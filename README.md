@@ -6,9 +6,8 @@
 
   `rolo.rb` prevents a program from running more than one copy at a time;
    it is useful with cron to make sure that a job doesn't run before a
-   previous one has finished.
-
-   `robo.rb` is a ruby version of Timothy program `solo` with more options.
+   previous one has finished. `robo.rb` is a ruby version of Timothy
+   program `solo` with more options.
 
 ## SYNOPSIS
 
@@ -22,11 +21,11 @@
   * `-t` (`--test`)     test of program is running. Don't execute any command.
   * `-p` (`--port`)     specify the port on which the rolo listens
 
-  In `<command>` and `<arguments>`, you can use `%address`, `%port` which
-  are replaced by the socket address and port that the problem uses to
-  check for status of the program. This is very useful if your program
-  closes all file descriptors at the time it runs, but it has some ways
-  to listen on `%address:%port`. See EXAMPLE for details.
+In `<command>` and `<arguments>`, you can use `%address`, `%port` which
+are replaced by the socket address and port that the problem uses to
+check for status of the program. This is very useful if your program
+closes all file descriptors at the time it runs, but it has some ways
+to listen on `%address:%port`. See EXAMPLE for details.
 
 ## HOW IT WORKS
 
@@ -57,7 +56,7 @@ ssh -fN remote -L localhost:1234:localhost:10000
   To keep this tunnel persistent, you can add this to your crontab
 
 <pre>
-      rolo.rb -p 4567 ssh -fN remote -L localhost:1234:localhost:10000
+rolo.rb -p 4567 ssh -fN remote -L localhost:1234:localhost:10000
 </pre>
 
   and allows this line to be executed once every 5 minutes. `rolo.rb`
