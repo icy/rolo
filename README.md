@@ -19,7 +19,8 @@
 
   * `-v` (`--verbose`)  print verbose message
   * `-t` (`--test`)     test of program is running. Don't execute any command.
-  * `-a` (`--address`)  address to check / listen on
+  * `-a` (`--address`)  address to check / listen on. By default, this address
+                        is generated from the user identify number
   * `-p` (`--port`)     port to check / on which rolo will listen
 
 In `<command>` and `<arguments>`, you can use `%address`, `%port` which
@@ -41,8 +42,10 @@ to listen on `%address:%port`. See EXAMPLE for details.
   will exit without invoking a new instance of your program.
 
   However, if your `<command>` closes all file descriptors at the time it
-  is executed, `rolo.rb` will be sucked. See `EXAMPLE` for details and for
-  a trick when using `rolo.rb` with `ssh`.
+  is executed, `rolo.rb` will be sucked. (See `EXAMPLE` for details and for
+  a trick when using `rolo.rb` with `ssh`.) If that the cases, you may
+  use the option `--adress` and `--port` to specify a socket that your
+  command binds on.
 
 ## EXAMPLE
 
