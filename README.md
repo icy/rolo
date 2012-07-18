@@ -2,18 +2,18 @@
 
   `rolo.rb` -- Prevents a program from running more than one copy at a time
 
+## SYNOPSIS
+
+<pre>
+  $0 [--verbose] [--test] [--port port_number] command [arguments]
+</pre>
+
 ## DESCRIPTION
 
   `rolo.rb` prevents a program from running more than one copy at a time;
    it is useful with cron to make sure that a job doesn't run before a
    previous one has finished. `robo.rb` is a ruby version of Timothy
    program `solo` with more options.
-
-## SYNOPSIS
-
-<pre>
-  $0 [--verbose] [--test] [--port port_number] command [arguments]
-</pre>
 
 ## OPTIONS
 
