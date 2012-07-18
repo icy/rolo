@@ -13,7 +13,7 @@
 ## SYNOPSIS
 
 <pre>
-  $0 [--verbose] [--test] [--port <port_number>] <command> [<arguments>]
+  $0 [--verbose] [--test] [--port port_number] command [arguments]
 </pre>
 
 ## OPTIONS
