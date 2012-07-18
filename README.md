@@ -93,7 +93,7 @@ rolo.rb -p 4567 \
   `%address:%port` (the real values will be provided by `rolo.rb`),
   and it will be checked by `rolo.rb` in its next run. Please note that
   we use a random port `12345` to prevent local connections to
-  `%address:%port` to be forwarded to remote.
+  `%address:%port` from being forwarded to remote.
 
   Another way is to use option `--address`
 
