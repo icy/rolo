@@ -93,7 +93,7 @@ rolo.rb -p 4567 \
   Another way is to use option `--address`
 
 <pre>
-rolo.rb -p 4567 -a 127.0.0.1 \
+rolo.rb -p 1234 -a 127.0.0.1 \
     ssh -fN remote \
       -L localhost:1234:localhost:10000
 </pre>
