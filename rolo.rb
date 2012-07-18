@@ -80,7 +80,7 @@ end
 
 OPTIONS = {:verbose => false, :port => 0}
 
-"Syntax: rolo [--verbose] --port <port_number> <command> [<arguments>]".die if ARGV.empty?
+"Syntax: rolo [--verbose] [--test] [--address <address>] --port <port_number> <command> [<arguments>]".die if ARGV.empty?
 
 while true
   f = ARGV.first
@@ -91,6 +91,11 @@ while true
   elsif %w{-v --verbose}.include?(f)
     OPTIONS[:verbose] = true
     ARGV.shift
+  elsif %w{-a --address}.include?(f)
+    ARGV.shift
+    OPTIONS[:address] = ARGV.shift.to_s.strip
+    "Invalid address '#{OPTIONS[:address]}' was provided. Should in in format 'x.y.z.t'".die \
+      unless OPTIONS[:address].match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/)
   elsif %w{-t --test}.include?(f)
     OPTIONS[:test] = true
     ARGV.shift
@@ -108,7 +113,7 @@ cmd = ARGV.shift.to_s
 "You must provide a command".die if cmd.empty?
 cmd = "#{cmd} #{ARGV.join(' ')}" unless ARGV.empty?
 
-address = [127, Process.uid, 1].pack("CnC").unpack("C4").join(".")
+address = OPTIONS[:address] || [127, Process.uid, 1].pack("CnC").unpack("C4").join(".")
 
 cmd = cmd.gsub("%port", OPTIONS[:port].to_s).gsub("%address", address)
 

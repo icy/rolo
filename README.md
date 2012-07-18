@@ -5,7 +5,7 @@
 ## SYNOPSIS
 
 <pre>
-  $0 [--verbose] [--test] [--port port_number] command [arguments]
+  $0 [-v] [--test] [-a address] -p port_number command [arguments]
 </pre>
 
 ## DESCRIPTION
@@ -19,7 +19,8 @@
 
   * `-v` (`--verbose`)  print verbose message
   * `-t` (`--test`)     test of program is running. Don't execute any command.
-  * `-p` (`--port`)     specify the port on which the rolo listens
+  * `-a` (`--address`)  address to check / listen on
+  * `-p` (`--port`)     port to check / on which rolo will listen
 
 In `<command>` and `<arguments>`, you can use `%address`, `%port` which
 are replaced by the socket address and port that the problem uses to
@@ -32,8 +33,9 @@ to listen on `%address:%port`. See EXAMPLE for details.
   Before starting your `<command>` (using `exec`), `rolo.rb` will open a
   socket on a local address `127.x.y.1:<port>` (`x.y` is translated
   from process's user id hence that allows two different users on the
-  system to use the same `<port>`.)  This socket will immediately closed
-  after your program exit. And as long as your command is running, we
+  system to use the same `<port>`; You can specify address by using the
+  option `--address <address>`, though.) This socket will be closed
+  after your command exits. And as long as your command is running, we
   have a chance to check its status by simply checking the status of
   this socket. If it is still open when `rolo.rb` is invoked, `rolo.rb`
   will exit without invoking a new instance of your program.
@@ -84,3 +86,12 @@ rolo.rb -p 4567 \
   The last use of option `-L` will ask `ssh` to open a socket on
   `%address:%port` (the real values will be provided by `rolo.rb`),
   and it will be checked by `rolo.rb` in its next run.
+
+  Another way is to use option `--address`
+
+<pre>
+rolo.rb -p 4567 -a 127.0.0.1 \
+    ssh -fN remote \
+      -L localhost:1234:localhost:10000
+</pre>
+
