@@ -5,7 +5,7 @@
 ## SYNOPSIS
 
 <pre>
-  $0 [-v] [--test] [-a address] -p port_number command [arguments]
+  $0 [-v] [--test] [-a address] -p port command [arguments]
 </pre>
 
 ## DESCRIPTION
