@@ -51,7 +51,7 @@ end
 def close_on_exec(att = true)
   ObjectSpace.each_object(IO) do |io|
     begin
-      if io.response_to?(:close_on_exec)
+      if io.respond_to?(:close_on_exec?)
         io.close_on_exec = attr
       else
         io.fcntl(Fcntl::F_SETFD, attr ? Fcntl::FD_CLOEXEC : 0)
