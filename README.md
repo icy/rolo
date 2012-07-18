@@ -66,7 +66,8 @@ ssh -fN remote -L localhost:1234:localhost:10000
   To keep this tunnel persistent, you can add this to your crontab
 
 <pre>
-rolo.rb -p 4567 ssh -fN remote -L localhost:1234:localhost:10000
+rolo.rb -p 4567 \
+  ssh remote -fNL localhost:1234:localhost:10000
 </pre>
 
   and allows this line to be executed once every 5 minutes. `rolo.rb`
@@ -84,9 +85,9 @@ rolo.rb -p 4567 ssh -fN remote -L localhost:1234:localhost:10000
   Using this option we can trick `rolo.rb` as below
 <pre>
 rolo.rb -p 4567 \
-    ssh -fN remote \
-      -L localhost:1234:localhost:10000 \
-      -L %address:%port:localhost:12345
+  ssh remote -fN \
+    -L localhost:1234:localhost:10000 \
+    -L %address:%port:localhost:12345
 </pre>
 
   The last use of option `-L` will ask `ssh` to open a socket on
@@ -99,7 +100,12 @@ rolo.rb -p 4567 \
 
 <pre>
 rolo.rb -p 1234 -a 127.0.0.1 \
-    ssh -fN remote \
-      -L localhost:1234:localhost:10000
+  ssh remote -fNL localhost:1234:localhost:10000
 </pre>
 
+  And this is another way
+
+<pre>
+rolo.rb -p 1234 -a 127.0.0.1 \
+  ssh remote -fNL %address:%port:localhost:10000
+</pre>
