@@ -52,6 +52,8 @@ ssh -fN remote -L localhost:1234:localhost:10000
 
   This allows you to connect to the local port 1234 on your mahince
   as same as conneting to address `localhost:10000` on remote server.
+  The process `ssh` will go to background immediately after it authenticates
+  successfully with the remote.
 
   To keep this tunnel persistent, you can add this to your crontab
 
@@ -66,8 +68,12 @@ rolo.rb -p 4567 ssh -fN remote -L localhost:1234:localhost:10000
   However, if you use *OpenSSH 5.6p1* (or later), `ssh` will close all file
   descriptors from the parent (except for `STDIN`, `STDOUT` and `STDERR`).
   As the socket opened by `rolo.rb` is closed, `rolo.rb` will always
-  start new instance of the `ssh` tunnel. Fortunately, `ssh` has option
-  to bind on local address, and here is the trick
+  start new instance of the `ssh` tunnel. (Actually I had process `bomb`
+  on my system when I used the original program `solo` to launch my
+  tunnels.)
+
+  Fortunately, `ssh` has option to bind on the local address.
+  Using this option we can trick `rolo.rb` as below
 <pre>
 rolo.rb -p 4567 \
     ssh -fN remote \
