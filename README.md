@@ -17,11 +17,17 @@
 
 ## OPTIONS
 
-  * `-v` (`--verbose`)  print verbose message
-  * `-t` (`--test`)     test of program is running. Don't execute any command.
-  * `-a` (`--address`)  address to check / listen on. By default, this address
-                        is generated from the user identify number
-  * `-p` (`--port`)     port to check / on which rolo will listen
+  * `-v` (`--verbose`)
+      Print verbose message
+  * `-t` (`--test`)
+      Test of program is running. Don't execute command.
+  * `-a` (`--address`)
+      Address to check / listen on. By default, this address is
+      `127.x.y.1:<port>` where `x.y` is translated from process's user
+      identity number and this allows two different users on the system
+      can use the same port with `rolo.rb`
+  * `-p` (`--port`)
+      Port to check / on which rolo will listen
 
 In `<command>` and `<arguments>`, you can use `%address`, `%port` which
 are replaced by the socket address and port that the problem uses to
@@ -32,14 +38,11 @@ to listen on `%address:%port`. See EXAMPLE for details.
 ## HOW IT WORKS
 
   Before starting your `<command>` (using `exec`), `rolo.rb` will open a
-  socket on a local address `127.x.y.1:<port>` (`x.y` is translated
-  from process's user id hence that allows two different users on the
-  system to use the same `<port>`; You can specify address by using the
-  option `--address <address>`, though.) This socket will be closed
-  after your command exits. And as long as your command is running, we
-  have a chance to check its status by simply checking the status of
-  this socket. If it is still open when `rolo.rb` is invoked, `rolo.rb`
-  will exit without invoking a new instance of your program.
+  socket on a local address (or address specified by option `--address`.)
+  This socket will be closed after your command exits, and as long as
+  your command is running, we have a chance to check its status by
+  checking the status of this socket. If it is still open when `rolo.rb`
+  is invoked, `rolo.rb` exits without invoking a new instance of command.
 
   However, if your `<command>` closes all file descriptors at the time it
   is executed, `rolo.rb` will be sucked. (See `EXAMPLE` for details and for
@@ -83,12 +86,14 @@ rolo.rb -p 4567 ssh -fN remote -L localhost:1234:localhost:10000
 rolo.rb -p 4567 \
     ssh -fN remote \
       -L localhost:1234:localhost:10000 \
-      -L %address:%port:localhost:10000
+      -L %address:%port:localhost:12345
 </pre>
 
   The last use of option `-L` will ask `ssh` to open a socket on
   `%address:%port` (the real values will be provided by `rolo.rb`),
-  and it will be checked by `rolo.rb` in its next run.
+  and it will be checked by `rolo.rb` in its next run. Please note that
+  we use a random port `12345` to prevent local connections to
+  `%address:%port` to be forwarded to remote.
 
   Another way is to use option `--address`
 
