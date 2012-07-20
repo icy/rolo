@@ -55,8 +55,8 @@
 require 'socket'
 
 class String
-  def die(ret = 1, dev = STDERR)
-    dev.puts(":: #{self}")
+  def die(ret = 1, dev = STDERR, prefix = ":: ")
+    dev.puts("#{prefix}#{self}")
     exit(ret)
   end
 
@@ -97,6 +97,9 @@ while true
     OPTIONS[:address] = ARGV.shift.to_s.strip
     "Invalid address '#{OPTIONS[:address]}' was provided. Should be in format 'x.y.z.t'".die \
       unless OPTIONS[:address].match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/)
+  elsif %w{-m --message}.include?(f)
+    ARGV.shift
+    OPTIONS[:message] = ARGV.shift
   elsif %w{-t --test}.include?(f)
     OPTIONS[:test] = true
     ARGV.shift
@@ -129,7 +132,7 @@ begin
   socket = Socket.new(AF_INET, SOCK_STREAM, 0)
   socket.bind(Socket.pack_sockaddr_in(OPTIONS[:port], address))
 rescue Errno::EADDRINUSE
-  "Address is in use. Is your application running?".die(0, STDOUT)
+  (OPTIONS[:message] || ":: Address is in use. Is your application running?").die(0, STDOUT, "")
 rescue => e
   e.to_s.die(1)
 end
