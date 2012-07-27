@@ -131,6 +131,7 @@ begin
   include Socket::Constants
   socket = Socket.new(AF_INET, SOCK_STREAM, 0)
   socket.bind(Socket.pack_sockaddr_in(OPTIONS[:port], address))
+  socket.close if OPTIONS[:address]
 rescue Errno::EADDRINUSE
   (OPTIONS[:message] || ":: Address is in use. Is your application running?").die(0, STDOUT, "")
 rescue => e
