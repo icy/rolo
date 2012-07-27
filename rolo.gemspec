@@ -7,7 +7,7 @@
 
 Gem::Specification.new do |s|
   s.name = 'rolo'
-  s.version = '1.0.1'
+  s.version = '1.0.2'
   s.date = '2012-07-20'
   s.summary = "`rolo` prevents a program from running more than one copy at a time"
   s.description = "Prevents a program from running more than one copy at a time"
