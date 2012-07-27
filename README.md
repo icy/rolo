@@ -47,7 +47,7 @@ to listen on `%address:%port`. See EXAMPLE for details.
   However, if your `<command>` closes all file descriptors at the time it
   is executed, `rolo.rb` will be sucked. (See `EXAMPLE` for details and for
   a trick when using `rolo.rb` with `ssh`.) If that the cases, you may
-  use the option `--adress` and `--port` to specify a socket that your
+  use the option `--address` and `--port` to specify a socket that your
   command binds on.
 
 ## EXAMPLE
