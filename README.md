@@ -46,7 +46,7 @@ gem install --remote rolo
   You can build and install it locally
 
 <pre>
-git clone git://github.com/icy/rolo
+git clone git://github.com/icy/rolo.git
 cd rolo
 gem build rolo.gemspec
 gem install --local rolo-VERSION.gem
