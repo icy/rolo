@@ -5,7 +5,7 @@
 ## SYNOPSIS
 
 <pre>
-  $0 [-v] [--test] [-a address] -p port command [arguments]
+$0 [-v] [--test] [-a address] -p port command [arguments]
 </pre>
 
 ## DESCRIPTION
@@ -29,11 +29,28 @@
   * `-p` (`--port`)
       Port to check / on which rolo will listen
 
-In `<command>` and `<arguments>`, you can use `%address`, `%port` which
-are replaced by the socket address and port that the problem uses to
-check for status of your command. This is very useful if your command
-closes all file descriptors at the time it runs, but it has some ways
-to listen on `%address:%port`. See EXAMPLE for details.
+  In `<command>` and `<arguments>`, you can use `%address`, `%port` which
+  are replaced by the socket address and port that the problem uses to
+  check for status of your command. This is very useful if your command
+  closes all file descriptors at the time it runs, but it has some ways
+  to listen on `%address:%port`. See EXAMPLE for details.
+
+## INSTALL
+
+  This program can be installed by using RubyGems
+
+<pre>
+gem install --remote rolo
+</pre>
+
+  You can build and install it locally
+
+<pre>
+git clone git://github.com/icy/rolo
+cd rolo
+gem build rolo.gemspec
+gem install rolo-<version>.gem
+</pre>
 
 ## HOW IT WORKS
 
@@ -83,6 +100,7 @@ rolo.rb -p 4567 \
 
   Fortunately, `ssh` has option to bind on the local address.
   Using this option we can trick `rolo.rb` as below
+
 <pre>
 rolo.rb -p 4567 \
   ssh remote -fN \
