@@ -49,7 +49,7 @@ gem install --remote rolo
 git clone git://github.com/icy/rolo
 cd rolo
 gem build rolo.gemspec
-gem install rolo-<version>.gem
+gem install --local rolo-VERSION.gem
 </pre>
 
 ## HOW IT WORKS
