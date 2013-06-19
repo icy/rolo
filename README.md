@@ -4,55 +4,41 @@
 
 ## SYNOPSIS
 
-<pre>
-$0 [-v] [--test] [-a address] -p port command [arguments]
-</pre>
+    $0 [-v] [--test] [-a address] -p port command [arguments]
 
 ## DESCRIPTION
 
+  Start an application and/or prevent it from running twice by simply
+  checking if there is a network socket that is open by the application
+  and/or by `rolo`.
+
   `rolo.rb` prevents a program from running more than one copy at a time;
-   it is useful with cron to make sure that a job doesn't run before a
-   previous one has finished. `robo.rb` is a ruby version of Timothy
-   program `solo` with more options.
+  it is useful with cron to make sure that a job doesn't run before a
+  previous one has finished. `robo.rb` is a ruby version of Timothy [1]
+  program `solo` with more options.
 
 ## OPTIONS
 
-  * `-v` (`--verbose`)
-      Print verbose message
-  * `-t` (`--test`)
-      Test of program is running. Don't execute command.
-  * `-a` (`--address`)
-      Address to check / listen on. By default, this address is
-      `127.x.y.1:<port>` where `x.y` is translated from process's user
-      identity number and this allows two different users on the system
-      can use the same port with `rolo.rb`
-  * `-p` (`--port`)
-      Port to check / on which rolo will listen
+  Please run the command `rolo` without any arguments for more details.
 
-  In `<command>` and `<arguments>`, you can use `%address`, `%port` which
-  are replaced by the socket address and port that the problem uses to
-  check for status of your command. This is very useful if your command
-  closes all file descriptors at the time it runs, but it has some ways
-  to listen on `%address:%port`. See EXAMPLE for details.
-
-## INSTALL
+## INSTALLATION
 
   This program can be installed by using RubyGems
 
-<pre>
-gem install --remote rolo
-</pre>
+    gem install --remote rolo
 
   You can build and install it locally
 
-<pre>
-git clone git://github.com/icy/rolo.git
-cd rolo
-gem build rolo.gemspec
-gem install --local rolo-VERSION.gem
-</pre>
+    git clone git://github.com/icy/rolo.git
+    cd rolo
+    gem build rolo.gemspec
+    gem install --local rolo-VERSION.gem
 
 ## HOW IT WORKS
+
+  If the `--no-bind` option is used, the program will simply assume that
+  the port is open by another program and it will only check if that port
+  is open or not. Otherwise, see below.
 
   Before starting your `<command>` (using `exec`), `rolo.rb` will open a
   socket on a local address (or address specified by option `--address`.)
@@ -69,11 +55,13 @@ gem install --local rolo-VERSION.gem
 
 ## EXAMPLE
 
+  Here are some simple examples and applications. Feel free to contribute.
+
+### Create SSH tunnels
+
   To create tunnel to a remote server, you can use this ssh command
 
-<pre>
-ssh -fN remote -L localhost:1234:localhost:10000
-</pre>
+    ssh -fN remote -L localhost:1234:localhost:10000
 
   This allows you to connect to the local port 1234 on your mahince
   as same as conneting to address `localhost:10000` on remote server.
@@ -82,14 +70,14 @@ ssh -fN remote -L localhost:1234:localhost:10000
 
   To keep this tunnel persistent, you can add this to your crontab
 
-<pre>
-rolo.rb -p 4567 \
-  ssh remote -fNL localhost:1234:localhost:10000
-</pre>
+    rolo.rb -p 4567 \
+      ssh remote -fNL localhost:1234:localhost:10000
 
   and allows this line to be executed once every 5 minutes. `rolo.rb`
   will check if your ssh command is still running. If 'yes', it will
   simply exit; if 'no', `rolo.rb` will start the ssh command.
+
+### With OpenSSH 5.6p1 or later
 
   However, if you use *OpenSSH 5.6p1* (or later), `ssh` will close all file
   descriptors from the parent (except for `STDIN`, `STDOUT` and `STDERR`).
@@ -101,12 +89,10 @@ rolo.rb -p 4567 \
   Fortunately, `ssh` has option to bind on the local address.
   Using this option we can trick `rolo.rb` as below
 
-<pre>
-rolo.rb -p 4567 \
-  ssh remote -fN \
-    -L localhost:1234:localhost:10000 \
-    -L %address:%port:localhost:12345
-</pre>
+    rolo.rb -p 4567 \
+      ssh remote -fN \
+        -L localhost:1234:localhost:10000 \
+        -L %address:%port:localhost:12345
 
   The last use of option `-L` will ask `ssh` to open a socket on
   `%address:%port` (the real values will be provided by `rolo.rb`),
@@ -116,14 +102,23 @@ rolo.rb -p 4567 \
 
   Another way is to use option `--address`
 
-<pre>
-rolo.rb -p 1234 -a 127.0.0.1 \
-  ssh remote -fNL localhost:1234:localhost:10000
-</pre>
+    rolo.rb -p 1234 -a 127.0.0.1 \
+      ssh remote -fNL localhost:1234:localhost:10000
 
   And this is another way
 
-<pre>
-rolo.rb -p 1234 -a 127.0.0.1 \
-  ssh remote -fNL %address:%port:localhost:10000
-</pre>
+    rolo.rb -p 1234 -a 127.0.0.1 \
+      ssh remote -fNL %address:%port:localhost:10000
+
+### Start VirtualBox guests
+
+  To make sure that your VirtualBox Windows guest is always running,
+  you can use:
+
+    rolo -a 1.2.3.4 -p 3389 --no-bind \
+      VBoxManage startvm foobar --type headless
+
+  Here `1.2.3.4` is the guest's address, and `3389` is the port
+  that is used by `rdesktop` service on the guest.
+
+[1] https://github.com/timkay/solo
