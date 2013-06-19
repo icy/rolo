@@ -53,6 +53,7 @@
 #
 
 require 'socket'
+require 'timeout'
 
 class String
   def die(ret = 1, dev = STDERR, prefix = ":: ")
@@ -79,9 +80,54 @@ def close_on_exec(att = true)
   end
 end
 
-OPTIONS = {:verbose => false, :port => 0}
+# See also
+# http://stackoverflow.com/questions/517219/ruby-see-if-a-port-is-open
+def port_open?(ip, port, timeout = 1)
+  Timeout::timeout(timeout) do
+    begin
+      TCPSocket.new(ip, port).close
+      true
+    rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+      false
+    end
+  end
+rescue Timeout::Error
+  false
+end
 
-"Syntax: rolo [--verbose] [--test] [--address <address>] --port <port_number> <command> [<arguments>]".die if ARGV.empty?
+OPTIONS = {:verbose => false,
+           :port => 0,
+           :timeout => 3,
+           :no_bind => false,
+           :address => "",
+           :message => ":: Address is in use. Is your application running?"}
+
+"Start an application and/or prevent it from running twice by simply
+checking if there is a network socket that is open by the application
+and/or by `rolo`.
+
+Syntax: rolo [options] <command> [<command arguments>]
+
+Option may be
+
+      --verbose   Show some verbose message (not very useful, though)
+  -t, --test      Test if application is running or if there's any error
+                  and return, without executing the command
+  -a, --address * Specify the address to listen on / to check
+  -p, --port    * To port to bind on / to check
+  -m, --message * The error message to use when application is running
+      --timeout * Time to wait for check if port `address:port` is open
+      --no-bind   Don't bind on any `address:port`, just use a simple
+                  TCP connection to check if `address:port` is open.
+                  This option should be used with `--address` option.
+                  This option is useful if your application binds on
+                  another interface (e.g, an remote command), and/or
+                  the port is too low to bind on (e.g, 22, 80).
+
+(Any star `*` indicates the option requires a valid value.)
+
+To get support please use https://github.com/icy/rolo/issues.
+".die(1, STDERR, "") if ARGV.empty?
 
 while true
   f = ARGV.first
@@ -100,6 +146,12 @@ while true
   elsif %w{-m --message}.include?(f)
     ARGV.shift
     OPTIONS[:message] = ARGV.shift
+  elsif %w{--no-bind}.include?(f)
+    ARGV.shift
+    OPTIONS[:no_bind] = true
+  elsif %w{--timeout}.include?(f)
+    ARGV.shift
+    OPTIONS[:timeout] = ARGV.shift.to_i
   elsif %w{-t --test}.include?(f)
     OPTIONS[:test] = true
     ARGV.shift
@@ -121,24 +173,38 @@ address = OPTIONS[:address] || [127, Process.uid, 1].pack("CnC").unpack("C4").jo
 
 cmd = cmd.gsub("%port", OPTIONS[:port].to_s).gsub("%address", address)
 
-("Will bind on %s:%d, command = '%s'" \
-  % [address, OPTIONS[:port], cmd]).verbose(OPTIONS[:verbose])
+("Would bind on %s:%d, command = '%s'" \
+  % [address, OPTIONS[:port], cmd]).verbose(OPTIONS[:verbose]) \
+    unless OPTIONS[:no_bind]
 
-# Taken from example in the source code documetation
-# Link: http://ruby-doc.org/stdlib-1.8.7/
-#         libdoc/socket/rdoc/Socket.html#method-i-bind
-begin
-  include Socket::Constants
-  socket = Socket.new(AF_INET, SOCK_STREAM, 0)
-  socket.bind(Socket.pack_sockaddr_in(OPTIONS[:port], address))
-  socket.close if OPTIONS[:address]
-rescue Errno::EADDRINUSE
-  (OPTIONS[:message] || ":: Address is in use. Is your application running?").die(0, STDOUT, "")
-rescue => e
-  e.to_s.die(1)
+if OPTIONS[:no_bind]
+  "The '--no-bind' option must be used with '--address' option".die \
+    if OPTIONS[:address].empty?
+
+  begin
+    OPTIONS[:message].die(0, STDOUT, "") \
+      if port_open?(OPTIONS[:address], OPTIONS[:port], OPTIONS[:timeout])
+  rescue => e
+    e.to_s.die(1)
+  end
+else
+  # Taken from example in the source code documetation
+  # Link: http://ruby-doc.org/stdlib-1.8.7/
+  #         libdoc/socket/rdoc/Socket.html#method-i-bind
+  begin
+    include Socket::Constants
+    socket = Socket.new(AF_INET, SOCK_STREAM, 0)
+    socket.bind(Socket.pack_sockaddr_in(OPTIONS[:port], address))
+    # Bind on the address if specified
+    socket.close unless OPTIONS[:address].empty?
+  rescue Errno::EADDRINUSE
+    OPTIONS[:message].die(0, STDOUT, "") unless OPTIONS[:message].empty?
+  rescue => e
+    e.to_s.die(1)
+  end
 end
 
 unless OPTIONS[:test]
-  close_on_exec(false)
+  close_on_exec(false) unless OPTIONS[:no_bind]
   exec cmd
 end
