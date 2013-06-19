@@ -126,6 +126,12 @@ Option may be
 
 (Any star `*` indicates the option requires a valid value.)
 
+In `<command>` and `<arguments>`, you can use `%address`, `%port` which
+are replaced by the socket address and port that the problem uses to
+check for status of your command. This is very useful if your command
+closes all file descriptors at the time it runs, but it has some ways
+to listen on `%address:%port`. See EXAMPLE for details.
+
 To get support please use https://github.com/icy/rolo/issues.
 ".die(1, STDERR, "") if ARGV.empty?
 
