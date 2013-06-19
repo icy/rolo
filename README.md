@@ -4,7 +4,7 @@
 
 ## SYNOPSIS
 
-    $0 [-v] [--test] [-a address] -p port command [arguments]
+    $0 [options] command [arguments]
 
 ## DESCRIPTION
 
@@ -14,8 +14,8 @@
 
   `rolo.rb` prevents a program from running more than one copy at a time;
   it is useful with cron to make sure that a job doesn't run before a
-  previous one has finished. `robo.rb` is a ruby version of Timothy [1]
-  program `solo` with more options.
+  previous one has finished. `robo.rb` is a ruby version of Timothy
+  program <https://github.com/timkay/solo> with some more options.
 
 ## OPTIONS
 
@@ -120,5 +120,3 @@
 
   Here `1.2.3.4` is the guest's address, and `3389` is the port
   that is used by `rdesktop` service on the guest.
-
-[1] https://github.com/timkay/solo
