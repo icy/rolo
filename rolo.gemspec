@@ -7,10 +7,10 @@
 
 Gem::Specification.new do |s|
   s.name = 'rolo'
-  s.version = '1.0.2'
-  s.date = '2012-07-20'
+  s.version = '1.1.0'
+  s.date = '2013-06-21'
   s.summary = "`rolo` prevents a program from running more than one copy at a time"
-  s.description = "Prevents a program from running more than one copy at a time"
+  s.description = "Start an application and/or prevent it from running twice by simply checking if there is a network socket that is open by the application and/or by `rolo`"
   s.authors = ["Anh K. Huynh"]
   s.email = 'kyanh@viettug.org'
   s.files = %w(README.md)
