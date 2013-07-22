@@ -113,6 +113,7 @@ Option may be
       --verbose   Show some verbose message (not very useful, though)
   -t, --test      Test if application is running or if there's any error
                   and return, without executing the command
+  -d, --dir     * The working directory (where the application starts)
   -a, --address * Specify the address to listen on / to check
   -p, --port    * To port to bind on / to check
   -m, --message * The error message to use when application is running
@@ -144,6 +145,9 @@ while true
   elsif %w{-v --verbose}.include?(f)
     OPTIONS[:verbose] = true
     ARGV.shift
+  elsif %w{-d --dir}.include?(f)
+    ARGV.shift
+    OPTIONS[:dir] = ARGV.shift
   elsif %w{-a --address}.include?(f)
     ARGV.shift
     OPTIONS[:address] = ARGV.shift.to_s.strip
@@ -212,5 +216,10 @@ end
 
 unless OPTIONS[:test]
   close_on_exec(false) unless OPTIONS[:no_bind]
+  begin
+    Dir.chdir(OPTIONS[:dir] || ".")
+  rescue => e
+    e.to_s.die(1)
+  end
   exec cmd
 end
