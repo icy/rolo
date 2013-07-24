@@ -110,6 +110,7 @@ Syntax: rolo [options] <command> [<command arguments>]
 
 Option may be
 
+  -h, --help      Show help message
       --verbose   Show some verbose message (not very useful, though)
   -t, --test      Test if application is running or if there's any error
                   and return, without executing the command
@@ -134,7 +135,9 @@ closes all file descriptors at the time it runs, but it has some ways
 to listen on `%address:%port`. See EXAMPLE for details.
 
 To get support please use https://github.com/icy/rolo/issues.
-".die(1, STDERR, "") if ARGV.empty?
+".die(1, STDERR, "") if ARGV.empty? \
+  or ARGV.include?("-h") \
+  or ARGV.include?("--help")
 
 while true
   f = ARGV.first
