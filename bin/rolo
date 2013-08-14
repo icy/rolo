@@ -99,7 +99,7 @@ OPTIONS = {:verbose => false,
            :port => 0,
            :timeout => 3,
            :no_bind => false,
-           :address => "",
+           :address => nil,
            :message => ":: Address is in use. Is your application running?"}
 
 "Start an application and/or prevent it from running twice by simply
@@ -192,7 +192,7 @@ cmd = cmd.gsub("%port", OPTIONS[:port].to_s).gsub("%address", address)
 
 if OPTIONS[:no_bind]
   "The '--no-bind' option must be used with '--address' option".die \
-    if OPTIONS[:address].empty?
+    if OPTIONS[:address]
 
   begin
     OPTIONS[:message].die(0, STDOUT, "") \
@@ -209,7 +209,7 @@ else
     socket = Socket.new(AF_INET, SOCK_STREAM, 0)
     socket.bind(Socket.pack_sockaddr_in(OPTIONS[:port], address))
     # Bind on the address if specified
-    socket.close unless OPTIONS[:address].empty?
+    socket.close unless OPTIONS[:address]
   rescue Errno::EADDRINUSE
     OPTIONS[:message].die(0, STDOUT, "") unless OPTIONS[:message].empty?
   rescue => e
