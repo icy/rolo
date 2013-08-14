@@ -222,5 +222,11 @@ unless OPTIONS[:test]
     e.to_s.die(1)
   end
   close_on_exec(false) unless OPTIONS[:no_bind]
+  ObjectSpace.each_object(IO) do |io|
+    begin
+      puts "#{io.inspect} => close/on/exec => #{io.close_on_exec?}"
+    rescue ::Exception => err
+    end unless [STDIN, STDOUT, STDERR].include?(io) or io.closed?
+  end
   exec cmd
 end
