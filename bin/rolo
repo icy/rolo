@@ -218,11 +218,11 @@ else
 end
 
 unless OPTIONS[:test]
-  close_on_exec(false) unless OPTIONS[:no_bind]
   begin
     Dir.chdir(OPTIONS[:dir] || ".")
   rescue => e
     e.to_s.die(1)
   end
+  close_on_exec(false) unless OPTIONS[:no_bind]
   exec cmd
 end
