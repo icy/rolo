@@ -216,11 +216,17 @@ else
 end
 
 unless OPTIONS[:test]
-  begin
-    Dir.chdir(OPTIONS[:dir] || ".")
-  rescue => e
-    e.to_s.die(1)
-  end
+  ruby_version = RUBY_VERSION.split('.').slice(0,2).join.to_i
+  chdir = OPTIONS[:dir] || "."
   close_on_exec(false) unless OPTIONS[:no_bind]
-  exec cmd
+  if ruby_version <= 18
+    begin
+      Dir.chdir(chdir)
+    rescue => e
+      e.to_s.die(1)
+    end
+    exec cmd
+  else
+    exec(cmd, :close_others => false, :chdir => chdir)
+  end
 end
