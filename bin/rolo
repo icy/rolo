@@ -192,7 +192,7 @@ cmd = cmd.gsub("%port", OPTIONS[:port].to_s).gsub("%address", address)
 
 if OPTIONS[:no_bind]
   "The '--no-bind' option must be used with '--address' option".die \
-    if OPTIONS[:address]
+    if not OPTIONS[:address]
 
   begin
     OPTIONS[:message].die(0, STDOUT, "") \
@@ -208,8 +208,6 @@ else
     include Socket::Constants
     socket = Socket.new(AF_INET, SOCK_STREAM, 0)
     socket.bind(Socket.pack_sockaddr_in(OPTIONS[:port], address))
-    # Bind on the address if specified
-    socket.close unless OPTIONS[:address]
   rescue Errno::EADDRINUSE
     OPTIONS[:message].die(0, STDOUT, "") unless OPTIONS[:message].empty?
   rescue => e
