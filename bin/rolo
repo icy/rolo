@@ -67,7 +67,7 @@ class String
 end
 
 # Based on the original code taken from from [4]
-def close_on_exec(att = true)
+def close_on_exec(attr = true)
   ObjectSpace.each_object(IO) do |io|
     begin
       if io.respond_to?(:close_on_exec?)
