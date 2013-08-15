@@ -1,6 +1,6 @@
 ## NAME
 
-  `rolo.rb` -- Prevents a program from running more than one copy at a time
+  `rolo` -- Prevents a program from running more than one copy at a time
 
 ## SYNOPSIS
 
@@ -12,7 +12,7 @@
   checking if there is a network socket that is open by the application
   and/or by `rolo`.
 
-  `rolo.rb` prevents a program from running more than one copy at a time;
+  `rolo` prevents a program from running more than one copy at a time;
   it is useful with cron to make sure that a job doesn't run before a
   previous one has finished. `robo.rb` is a ruby version of Timothy
   program <https://github.com/timkay/solo> with some more options.
@@ -40,16 +40,16 @@
   the port is open by another program and it will only check if that port
   is open or not. Otherwise, see below.
 
-  Before starting your `<command>` (using `exec`), `rolo.rb` will open a
+  Before starting your `<command>` (using `exec`), `rolo` will open a
   socket on a local address (or address specified by option `--address`.)
   This socket will be closed after your command exits, and as long as
   your command is running, we have a chance to check its status by
-  checking the status of this socket. If it is still open when `rolo.rb`
-  is invoked, `rolo.rb` exits without invoking a new instance of command.
+  checking the status of this socket. If it is still open when `rolo`
+  is invoked, `rolo` exits without invoking a new instance of command.
 
   However, if your `<command>` closes all file descriptors at the time it
-  is executed, `rolo.rb` will be sucked. (See `EXAMPLE` for details and for
-  a trick when using `rolo.rb` with `ssh`.) If that the cases, you may
+  is executed, `rolo` will be sucked. (See `EXAMPLE` for details and for
+  a trick when using `rolo` with `ssh`.) If that the cases, you may
   use the option `--address` and `--port` to specify a socket that your
   command binds on.
 
@@ -57,7 +57,7 @@
 
   Here are some simple examples and applications. Feel free to contribute.
 
-### Create SSH tunnels
+### Create SSH tunnels (OpenSSH older than 5.6p1)
 
   To create tunnel to a remote server, you can use this ssh command
 
@@ -70,45 +70,57 @@
 
   To keep this tunnel persistent, you can add this to your crontab
 
-    rolo.rb -p 4567 \
+    rolo -p 4567 \
       ssh remote -fNL localhost:1234:localhost:10000
 
-  and allows this line to be executed once every 5 minutes. `rolo.rb`
+  and allows this line to be executed once every 5 minutes. `rolo`
   will check if your ssh command is still running. If 'yes', it will
-  simply exit; if 'no', `rolo.rb` will start the ssh command.
+  simply exit; if 'no', `rolo` will start the ssh command.
 
 ### With OpenSSH 5.6p1 or later
 
   However, if you use *OpenSSH 5.6p1* (or later), `ssh` will close all file
   descriptors from the parent (except for `STDIN`, `STDOUT` and `STDERR`).
-  As the socket opened by `rolo.rb` is closed, `rolo.rb` will always
+  As the socket opened by `rolo` is closed, `rolo` will always
   start new instance of the `ssh` tunnel. (Actually I had process `bomb`
   on my system when I used the original program `solo` to launch my
   tunnels.)
 
   Fortunately, `ssh` has option to bind on the local address.
-  Using this option we can trick `rolo.rb` as below
+  Using this option we can trick `rolo` as below
 
-    rolo.rb -p 4567 \
+    rolo -p 4567 \
       ssh remote -fN \
         -L localhost:1234:localhost:10000 \
         -L %address:%port:localhost:12345
 
   The last use of option `-L` will ask `ssh` to open a socket on
-  `%address:%port` (the real values will be provided by `rolo.rb`),
-  and it will be checked by `rolo.rb` in its next run. Please note that
+  `%address:%port` (the real values will be provided by `rolo`),
+  and it will be checked by `rolo` in its next run. Please note that
   we use a random port `12345` to prevent local connections to
   `%address:%port` from being forwarded to remote.
 
   Another way is to use option `--address`
 
-    rolo.rb -p 1234 -a 127.0.0.1 \
+    rolo -p 1234 -a 127.0.0.1 \
       ssh remote -fNL localhost:1234:localhost:10000
 
   And this is another way
 
-    rolo.rb -p 1234 -a 127.0.0.1 \
+    rolo -p 1234 -a 127.0.0.1 \
       ssh remote -fNL %address:%port:localhost:10000
+
+### Create ssh tunnels: the cleanest way
+
+  Within the `--no-bind` option, you can event do something cleaner
+
+    rolo --no-bind -p 1234 -a 127.0.0.1 \
+      ssh remote -fN -L localhost:1234:localhost:10000
+
+  Because `ssh` would listen on the local port `1234`, we may just ask
+  `rolo` to check if that port is open. If `yes`, it's sure that our
+  tunnel is running and `rolo` will simply exit. Otherwise, `ssh` may
+  exit and `rolo` will start new `ssh` tunnel.
 
 ### Start VirtualBox guests
 
