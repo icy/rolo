@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/icy/rolo.svg?branch=master)](https://travis-ci.org/icy/rolo)
+
 ## NAME
 
   `rolo` -- Prevents a program from running more than one copy at a time
