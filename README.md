@@ -10,14 +10,16 @@
 
 ## DESCRIPTION
 
-  Start an application and/or prevent it from running twice by simply
+  `robo(.rb)` is a `Ruby` version of Timothy program
+  <https://github.com/timkay/solo> with some more options.
+
+  `rolo` starts an application and/or prevent it from running twice by simply
   checking if there is a network socket that is open by the application
   and/or by `rolo`.
 
   `rolo` prevents a program from running more than one copy at a time;
   it is useful with cron to make sure that a job doesn't run before a
-  previous one has finished. `robo.rb` is a ruby version of Timothy
-  program <https://github.com/timkay/solo> with some more options.
+  previous one has finished.
 
 ## OPTIONS
 

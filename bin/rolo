@@ -102,7 +102,10 @@ OPTIONS = {:verbose => false,
            :address => nil,
            :message => ":: Address is in use. Is your application running?"}
 
-"Start an application and/or prevent it from running twice by simply
+"`robo(.rb)` is a `Ruby` version of Timothy program
+<https://github.com/timkay/solo> with some more options.
+
+`rolo` starts an application and/or prevent it from running twice by simply
 checking if there is a network socket that is open by the application
 and/or by `rolo`.
 
