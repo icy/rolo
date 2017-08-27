@@ -2,11 +2,11 @@
 
 # Purpose: Gem specification
 # Author : Anh K. Huynh
-# License: GPL2
+# License: GPL-2.0
 # Date   : 2012 July 20th
 
 Gem::Specification.new do |s|
-  s.license = 'GPL v2'
+  s.license = 'GPL-2.0'
   s.name = 'rolo'
   s.version = '1.1.6'
   s.date = '2017-08-27'
