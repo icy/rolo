@@ -114,6 +114,15 @@
     rolo -p 1234 -a 127.0.0.1 \
       ssh remote -fNL %address:%port:localhost:10000
 
+  The following command creates a sock proxy
+
+    rolo -p 4444 -a 127.0.0.1 \
+      ssh remote_ip -fN -D %address
+
+  and you can query your service via this proxy
+
+    curl api.ipify.org -L  --proxy socks5://127.0.0.1:4444/ ; echo
+
 ### Create ssh tunnels: the cleanest way
 
   Within the `--no-bind` option, you can event do something cleaner
